@@ -12,6 +12,7 @@
 @interface OSViewController () {
     OSSpritzLabel *osLabel;
     IBOutlet UILabel *wpmLabel;
+    __weak IBOutlet UITextView *textView;
 }
 
 @end
@@ -21,11 +22,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    NSString *animalFarm = @"Mr. Jones, of the Manor Farm, had locked the hen-houses for the night, but was too drunk to remember to shut the pop-holes. With the ring of light from his lantern dancing from side to side, he lurched across the yard, kicked off his boots at the back door, drew himself a last glass of beer from the barrel in the scullery, and made his way up to bed, where Mrs. Jones was already snoring.";
     
+	// Do any additional setup after loading the view, typically from a nib.
     osLabel = [[OSSpritzLabel alloc] initWithFrame:CGRectMake(0, 50, 320.0f, 40)];
-    osLabel.text = animalFarm;
+    osLabel.text = textView.text;
     [self.view addSubview:osLabel];
 }
 
@@ -36,6 +36,7 @@
 }
 
 - (IBAction)startButtonPressed:(id)sender {
+    osLabel.text = textView.text;
     [osLabel start];
 }
 - (IBAction)stopButtonPressed:(id)sender {
@@ -46,5 +47,16 @@
     [osLabel setWordsPerMinute:round(sender.value)];
     wpmLabel.text = [@(osLabel.wordsPerMinute) stringValue];
 }
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    if ([textView isFirstResponder]) {
+        if (!CGRectContainsPoint(textView.frame, [touch locationInView:self.view])) {
+            [textView resignFirstResponder];
+        }
+    }
+}
+
 
 @end
